@@ -11,9 +11,9 @@ func Start(cfg config.Configurations) {
 	sheety := NewSheety(cfg.SHEETY_API)
 	instagram := NewInstagram(cfg.INSTAGRAM_USERNAME, cfg.INSTAGRAM_PASSWORD)
 
-	refCodes, err := sheety.FindAllReferalCode()
+	adsPartners, err := sheety.FindAllAdsPartner()
 	if err != nil {
-		log.Fatal(fmt.Sprintf("error when FindAllReferalCode: %v", err))
+		log.Fatal(fmt.Sprintf("error when FindAllAdsPartner: %v", err))
 		return
 	}
 
@@ -23,7 +23,7 @@ func Start(cfg config.Configurations) {
 		return
 	}
 
-	hashtags, err := instagram.FindHastagFor(refCodes)
+	hashtags, err := instagram.FindHastagFor(adsPartners)
 	if err != nil {
 		log.Fatal(fmt.Sprintf("error when FindHastagFor: %v", err))
 		return

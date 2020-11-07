@@ -39,22 +39,26 @@ func (s *Sheety) InsertAdsSocial(adsSocial AdsSocial) (refcode []string, err err
 }
 
 type ResponseAdsPartner struct {
-	AdsPartner []struct {
-		AdsID       int     `json:"adsId,omitempty"`
-		AdsName     string  `json:"adsName,omitempty"`
-		RefCode     string  `json:"refCode,omitempty"`
-		WPCode      string  `json:"wpCode,omitempty"`
-		IGLike      int     `json:"igLike,omitempty"`
-		IGComment   int     `json:"igComment,omitempty"`
-		IGVideoView int     `json:"igVideoView,omitempty"`
-		Score       int     `json:"score,omitempty"`
-		Amount      float64 `json:"amount,omitempty"`
-		State       string  `json:"state,omitempty"`
-		ID          int     `json:"id,omitempty"`
-	} `json:"adsPartner,omitempty"`
+	AdsPartner []AdsPartner `json:"adsPartner,omitempty"`
 }
 
-func (s *Sheety) FindAllReferalCode() (refcode []string, err error) {
+type AdsPartner struct {
+	AdsID       int     `json:"adsId,omitempty"`
+	AdsName     string  `json:"adsName,omitempty"`
+	RefCode     string  `json:"refCode,omitempty"`
+	WPCode      string  `json:"wpCode,omitempty"`
+	IGLike      int     `json:"igLike,omitempty"`
+	IGComment   int     `json:"igComment,omitempty"`
+	IGVideoView int     `json:"igVideoView,omitempty"`
+	Score       int     `json:"score,omitempty"`
+	Amount      float64 `json:"amount,omitempty"`
+	State       string  `json:"state,omitempty"`
+	ID          int     `json:"id,omitempty"`
+	StartDate   string  `json:"startDate,omitempty"`
+	EndDate     string  `json:"endDate,omitempty"`
+}
+
+func (s *Sheety) FindAllAdsPartner() (adsPartners []AdsPartner, err error) {
 	client := resty.New()
 	resp, err := client.R().EnableTrace().
 		Get(fmt.Sprintf("%s%s?filter[active]=%d", s.API, common.SHEETY_ADSPARTNER, 1))
@@ -68,10 +72,7 @@ func (s *Sheety) FindAllReferalCode() (refcode []string, err error) {
 		return
 	}
 
-	for _, adp := range response.AdsPartner {
-		refcode = append(refcode, adp.RefCode)
-	}
-
+	adsPartners = response.AdsPartner
 	return
 }
 

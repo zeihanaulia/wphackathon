@@ -17,7 +17,7 @@ func NewInstagram(username, password string) Instagram {
 	return Instagram{Username: username, Password: password}
 }
 
-func (i *Instagram) FindHastagFor(refcodes []string) (adsSocials []AdsSocial, err error) {
+func (i *Instagram) FindHastagFor(ads []AdsPartner) (adsSocials []AdsSocial, err error) {
 	insta := goinsta.New(i.Username, i.Password)
 	err = insta.Login()
 	if err != nil {
@@ -25,9 +25,9 @@ func (i *Instagram) FindHastagFor(refcodes []string) (adsSocials []AdsSocial, er
 		return
 	}
 
-	for _, rc := range refcodes {
-		log.Println("start sync hashtag: ", rc)
-		hashtag := insta.NewHashtag(rc)
+	for _, rc := range ads {
+		log.Println("start sync hashtag: ", rc.RefCode)
+		hashtag := insta.NewHashtag(rc.RefCode)
 		_ = hashtag.Sync()
 
 		pages := 100
@@ -35,18 +35,27 @@ func (i *Instagram) FindHastagFor(refcodes []string) (adsSocials []AdsSocial, er
 			for _, section := range hashtag.Sections {
 				for _, media := range section.LayoutContent.Medias {
 					takenAt := time.Unix(media.Item.TakenAt, 0).Format("2006-01-02")
-					adsSocials = append(adsSocials, AdsSocial{
-						Code:           media.Item.Code,
-						RefCode:        rc,
-						UserID:         media.Item.User.ID,
-						Username:       media.Item.User.Username,
-						Likes:          media.Item.Likes,
-						URL:            fmt.Sprintf("https://www.instagram.com/p/%s", media.Item.Code),
-						Comments:       media.Item.CommentCount,
-						VideoViewCount: media.Item.ViewCount,
-						Caption:        media.Item.Caption.Text,
-						TakenAt:        takenAt,
-					})
+					takenAtd, _ := time.Parse("2006-01-02", takenAt)
+					startDate, _ := time.Parse("2006-01-02", rc.StartDate)
+					endDate, _ := time.Parse("2006-01-02", rc.EndDate)
+
+					if takenAtd.Equal(startDate) || takenAtd.After(startDate) {
+						if takenAtd.Equal(endDate) || takenAtd.Before(endDate) {
+							adsSocials = append(adsSocials, AdsSocial{
+								Code:           media.Item.Code,
+								RefCode:        rc.RefCode,
+								UserID:         media.Item.User.ID,
+								Username:       media.Item.User.Username,
+								Likes:          media.Item.Likes,
+								URL:            fmt.Sprintf("https://www.instagram.com/p/%s", media.Item.Code),
+								Comments:       media.Item.CommentCount,
+								VideoViewCount: media.Item.ViewCount,
+								Caption:        media.Item.Caption.Text,
+								TakenAt:        takenAt,
+							})
+						}
+					}
+
 				}
 			}
 		}
