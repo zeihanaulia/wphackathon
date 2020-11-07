@@ -12,13 +12,12 @@ import (
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	go func() {
-		engine.Start(config.Configurations{
-			SHEETY_API:         os.Getenv("SHEETY_API"),
-			INSTAGRAM_USERNAME: os.Getenv("INSTAGRAM_USERNAME"),
-			INSTAGRAM_PASSWORD: os.Getenv("INSTAGRAM_PASSWORD"),
-		})
-	}()
+
+	engine.Start(config.Configurations{
+		SHEETY_API:         os.Getenv("SHEETY_API"),
+		INSTAGRAM_USERNAME: os.Getenv("INSTAGRAM_USERNAME"),
+		INSTAGRAM_PASSWORD: os.Getenv("INSTAGRAM_PASSWORD"),
+	})
 
 	response := ports.ResponseHashTag{
 		SyncAt: time.Now().Format(time.RFC3339),
