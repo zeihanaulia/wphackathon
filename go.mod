@@ -4,6 +4,8 @@ go 1.14
 
 require (
 	github.com/ahmdrz/goinsta/v2 v2.4.5
+	github.com/deepmap/oapi-codegen v1.4.1
+	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v1.1.1

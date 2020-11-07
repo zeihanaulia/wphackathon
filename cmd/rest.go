@@ -16,9 +16,12 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
+	"net/http"
 
+	"github.com/go-chi/chi"
 	"github.com/spf13/cobra"
+	"github.com/zeihanaulia/instagram-scraper/internal/common/server"
+	"github.com/zeihanaulia/instagram-scraper/internal/engine/ports"
 )
 
 // restCmd represents the rest command
@@ -32,7 +35,9 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("rest called", cfg)
+		server.RunHTTPServer(func(router chi.Router) http.Handler {
+			return ports.HandlerFromMux(ports.NewHttpServer(cfg), router)
+		})
 	},
 }
 

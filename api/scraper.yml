@@ -1,0 +1,96 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Instagram Scraper
+  description: TODO
+  contact:
+    name: Antek Async
+servers:
+  - url: https://{hostname}/api
+    variables:
+      hostname:
+        default: localhost
+security:
+  - bearerAuth: []
+paths:
+  /hashtag/sync:
+    get:
+      operationId: syncHashtag
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HashtagSyncResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    HashtagSyncResponse:
+      type: object
+      required: [userId, userName, refCode, url, caption, comments, likes, videoViewCount, id,  takenAt]
+      properties:
+        status:
+          type: string
+          example: "Requested"
+        sync_at:
+          type: string
+          format: date
+          example: "2020-11-07T19:05:58+07:00"
+    Hashtag:
+      type: object
+      required: [userId, userName, refCode, url, caption, comments, likes, videoViewCount, id,  takenAt]
+      properties:
+        userId:
+          type: integer
+          example: 1
+        userName:
+          type: string
+          example: "zeihanaulia"
+        refCode:
+          type: string
+          example: "wp1234"
+        url:
+          type: string
+          example: "https://www.instagram.com/p/Butd9K0BUX8"
+        caption:
+          type: string
+          example: "#wp1234"
+        comments:
+          type: integer
+          example: 2
+        likes:
+          type: integer
+          example: 2
+        videoViewCount:
+          type: integer
+          example: 2
+        id:
+          type: integer
+          example: 2
+        takenAt:
+          type: string
+          format: date
+          example: "2020-03-22"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
